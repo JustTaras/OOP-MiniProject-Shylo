@@ -1,0 +1,216 @@
+@startuml VetClinic-ClassDiagram
+!theme plain
+skinparam ClassBackgroundColor #FEFCE8
+skinparam ClassBorderColor #333333
+
+' Domain Layer
+namespace Domain {
+    enum Species {
+        Dog
+        Cat
+        Bird
+        Rabbit
+        Hamster
+        Other
+    }
+
+    enum AppointmentStatus {
+        Scheduled
+        Completed
+        Cancelled
+    }
+
+    class Owner {
+        -id: int
+        -name: string
+        -phoneNumber: string
+        -email: string
+        +Id: int {readOnly}
+        +Name: string {readOnly}
+        +PhoneNumber: string {readOnly}
+        +Email: string {readOnly}
+        +Owner(id, name, phone, email)
+        +ToString(): string
+    }
+
+    class Pet {
+        -id: int
+        -name: string
+        -species: Species
+        -breed: string
+        -ageInMonths: int
+        -owner: Owner
+        +Id: int {readOnly}
+        +Name: string {readOnly}
+        +Species: Species {readOnly}
+        +Breed: string {readOnly}
+        +AgeInMonths: int {readOnly}
+        +Owner: Owner {readOnly}
+        +Pet(id, name, species, breed, age, owner)
+        +UpdateAge(newAge): void
+        +ToString(): string
+    }
+
+    class Veterinarian {
+        -id: int
+        -name: string
+        -specialization: string
+        -licenseNumber: string
+        +Id: int {readOnly}
+        +Name: string {readOnly}
+        +Specialization: string {readOnly}
+        +LicenseNumber: string {readOnly}
+        +Veterinarian(id, name, specialization, license)
+        +ToString(): string
+    }
+
+    class Appointment {
+        -id: int
+        -pet: Pet
+        -veterinarian: Veterinarian
+        -appointmentDateTime: DateTime
+        -reason: string
+        -status: AppointmentStatus
+        -createdAt: DateTime
+        +Id: int {readOnly}
+        +Pet: Pet {readOnly}
+        +Veterinarian: Veterinarian {readOnly}
+        +AppointmentDateTime: DateTime {readOnly}
+        +Reason: string {readOnly}
+        +Status: AppointmentStatus
+        +CreatedAt: DateTime {readOnly}
+        +Appointment(id, pet, vet, dateTime, reason)
+        +Complete(): void
+        +Cancel(): void
+        +ToString(): string
+    }
+
+    class MedicalRecord {
+        -id: int
+        -pet: Pet
+        -appointment: Appointment
+        -diagnosis: string
+        -treatment: string
+        -notes: string
+        -recordDate: DateTime
+        +Id: int {readOnly}
+        +Pet: Pet {readOnly}
+        +Appointment: Appointment {readOnly}
+        +Diagnosis: string {readOnly}
+        +Treatment: string {readOnly}
+        +Notes: string {readOnly}
+        +RecordDate: DateTime {readOnly}
+        +MedicalRecord(id, pet, appointment, diagnosis, treatment, notes)
+        +ToString(): string
+    }
+
+    interface IAppointmentRepository {
+        +Add(appointment): void
+        +GetById(id): Appointment?
+        +GetAll(): IReadOnlyList<Appointment>
+        +GetByPet(pet): IReadOnlyList<Appointment>
+        +GetByVeterinarian(vet): IReadOnlyList<Appointment>
+        +GetByDateRange(start, end): IReadOnlyList<Appointment>
+        +Update(appointment): void
+        +Remove(id): bool
+        +IsVeterinarianAvailable(vet, dateTime): bool
+    }
+
+    ' Relationships
+    Pet --> Owner : owns
+    Appointment --> Pet : has
+    Appointment --> Veterinarian : scheduled with
+    MedicalRecord --> Pet : for
+    MedicalRecord --> Appointment : from
+}
+
+' Application Layer
+namespace Application {
+    class AppointmentService {
+        -repository: IAppointmentRepository
+        +AppointmentService(repository)
+        +ScheduleAppointment(pet, vet, dateTime, reason): Result<Appointment>
+        +GetAllAppointments(): Result<List<Appointment>>
+        +GetAppointmentsByPet(pet): Result<List<Appointment>>
+        +GetAppointmentsByVeterinarian(vet): Result<List<Appointment>>
+        +CompleteAppointment(appointment): Result
+        +CancelAppointment(appointment): Result
+        -GenerateAppointmentId(): int
+    }
+
+    class Result<T> {
+        +Success: bool {readOnly}
+        +Data: T? {readOnly}
+        +Message: string {readOnly}
+        +Result(success, data, message)
+        +{static} Ok(data, message): Result<T>
+        +{static} Fail(message): Result<T>
+    }
+
+    ' Relationships
+    AppointmentService --> IAppointmentRepository : depends on
+    AppointmentService --> Result : uses
+}
+
+' Infrastructure Layer
+namespace Infrastructure {
+    class InMemoryAppointmentRepository {
+        -appointments: List<Appointment>
+        +Add(appointment): void
+        +GetById(id): Appointment?
+        +GetAll(): IReadOnlyList<Appointment>
+        +GetByPet(pet): IReadOnlyList<Appointment>
+        +GetByVeterinarian(vet): IReadOnlyList<Appointment>
+        +GetByDateRange(start, end): IReadOnlyList<Appointment>
+        +Update(appointment): void
+        +Remove(id): bool
+        +IsVeterinarianAvailable(vet, dateTime): bool
+    }
+
+    ' Relationships
+    InMemoryAppointmentRepository --|> IAppointmentRepository : implements
+}
+
+' Console Layer
+namespace Console {
+    class ClinicApp {
+        -service: AppointmentService
+        -owners: List<Owner>
+        -pets: List<Pet>
+        -vets: List<Veterinarian>
+        +ClinicApp(service, owners, pets, vets)
+        +Run(): void
+        -ScheduleAppointment(): void
+        -ViewAllAppointments(): void
+        -ViewPetAppointments(): void
+        -ViewVeterinarianAppointments(): void
+        -DisplayAppointmentDetails(appointment): void
+    }
+
+    class DemoDataFactory {
+        +{static} CreateOwner(name, phone, email): Owner
+        +{static} CreatePet(name, species, breed, age, owner): Pet
+        +{static} CreateVeterinarian(name, spec, license): Veterinarian
+        +{static} CreateSampleOwners(): List<Owner>
+        +{static} CreateSamplePets(owners): List<Pet>
+        +{static} CreateSampleVeterinarians(): List<Veterinarian>
+    }
+
+    ' Relationships
+    ClinicApp --> AppointmentService : orchestrates
+    ClinicApp --> Owner : manages
+    ClinicApp --> Pet : manages
+    ClinicApp --> Veterinarian : manages
+}
+
+' Key Relationships
+AppointmentService --> Domain.IAppointmentRepository : depends on
+InMemoryAppointmentRepository --> Domain.Appointment : manages
+ClinicApp --> AppointmentService : uses
+
+' Layer Separation
+Domain .[hidden] Application
+Application .[hidden] Infrastructure
+Infrastructure .[hidden] Console
+
+@enduml

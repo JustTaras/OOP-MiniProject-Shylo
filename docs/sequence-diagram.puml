@@ -1,0 +1,91 @@
+@startuml VetClinic-SequenceDiagram-ScheduleAppointment
+!theme plain
+
+participant User as user
+participant Console as console
+participant ClinicApp as app
+participant AppointmentService as service
+participant Domain as domain
+participant Repository as repo
+
+autonumber
+
+user -> console: Run application
+console -> app: new ClinicApp()
+console -> app: app.Run()
+
+app -> user: Display main menu
+user -> app: 1 (Schedule Appointment)
+
+app -> app: Display available pets
+user -> app: Select pet (e.g., "Fluffy")
+
+app -> app: Display available vets
+user -> app: Select vet (e.g., "Dr. Sarah Wilson")
+
+app -> user: Enter appointment date
+user -> app: 2024-05-20
+
+app -> user: Enter appointment time
+user -> app: 14:00
+
+app -> user: Enter reason
+user -> app: "Regular checkup"
+
+app -> service: ScheduleAppointment(\n  pet: Fluffy,\n  vet: Dr. Sarah Wilson,\n  dateTime: 2024-05-20 14:00,\n  reason: "Regular checkup"\n)
+
+service -> domain: new Appointment(\n  id: auto,\n  pet: Fluffy,\n  vet: Dr. Sarah Wilson,\n  dateTime: 2024-05-20 14:00,\n  reason: "Regular checkup"\n)
+
+note over domain
+  Domain validates:
+  - dateTime > DateTime.Now
+  - pet != null
+  - vet != null
+  - reason not empty
+end note
+
+domain --> service: Appointment created
+
+service -> repo: IsVeterinarianAvailable(\n  Dr. Sarah Wilson,\n  2024-05-20 14:00\n)
+
+note over repo
+  Repository checks for conflicts:
+  - No other appointments at same time
+  - Same veterinarian
+  - Status != Cancelled
+end note
+
+repo --> service: true (available)
+
+service -> repo: Add(appointment)
+
+note over repo
+  Repository stores in memory
+end note
+
+repo --> service: Success
+
+service --> app: Result<Appointment> {\n  Success: true,\n  Data: Appointment(...),\n  Message: "Appointment scheduled..."\n}
+
+app -> console: Display success
+console -> user: ✅ Appointment scheduled!\n   ID: 1\n   Pet: Fluffy\n   Owner: John Smith\n   Vet: Dr. Sarah Wilson\n   DateTime: 2024-05-20 14:00\n   Reason: Regular checkup
+
+user -> app: Press Enter to continue
+
+app -> user: Display main menu
+user -> app: 2 (View All Appointments)
+
+app -> service: GetAllAppointments()
+
+service -> repo: GetAll()
+repo --> service: IReadOnlyList<Appointment>
+
+service --> app: Result<IReadOnlyList<Appointment>> {\n  Success: true,\n  Data: [Appointment(...)],\n  Message: "Retrieved 1 appointments"\n}
+
+app -> console: Display appointments list
+console -> user: Appointment ID: 1\n   Pet: Fluffy\n   Vet: Dr. Sarah Wilson\n   DateTime: 2024-05-20 14:00\n   Status: Scheduled
+
+user -> app: 5 (Exit)
+app -> user: Goodbye!
+
+@enduml
