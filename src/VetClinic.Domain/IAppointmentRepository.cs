@@ -50,4 +50,34 @@ public interface IAppointmentRepository
     /// Check if veterinarian is available at specific date/time
     /// </summary>
     bool IsVeterinarianAvailable(Veterinarian veterinarian, DateTime appointmentDateTime);
+
+    /// <summary>
+    /// Add a medical record to the repository (Lab 35+)
+    /// </summary>
+    void AddMedicalRecord(MedicalRecord record);
+
+    /// <summary>
+    /// Get medical record by ID (Lab 35+)
+    /// </summary>
+    MedicalRecord? GetMedicalRecordById(int id);
+
+    /// <summary>
+    /// Get all medical records for a specific pet (Lab 35+)
+    /// </summary>
+    IReadOnlyList<MedicalRecord> GetMedicalRecordsByPet(Pet pet);
+
+    /// <summary>
+    /// Get all medical records (Lab 35+)
+    /// </summary>
+    IReadOnlyList<MedicalRecord> GetAllMedicalRecords();
+
+    /// <summary>
+    /// Get next appointment ID for new appointments (Lab 35+)
+    /// </summary>
+    int GetNextAppointmentId();
+
+    /// <summary>
+    /// Get next medical record ID for new records (Lab 35+)
+    /// </summary>
+    int GetNextMedicalRecordId();
 }

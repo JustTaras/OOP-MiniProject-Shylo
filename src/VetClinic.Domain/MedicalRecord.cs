@@ -6,33 +6,30 @@ namespace VetClinic.Domain;
 public class MedicalRecord
 {
     public int Id { get; }
+    public int AppointmentId { get; }
     public Pet Pet { get; }
-    public Appointment Appointment { get; }
     public string Diagnosis { get; }
     public string Treatment { get; }
-    public string Notes { get; }
-    public DateTime RecordDate { get; }
+    public DateTime VisitDate { get; }
+    public DateTime RecordedAt { get; }
 
     /// <summary>
     /// Creates a new MedicalRecord with validation
+    /// Lab 35: Simplified constructor for persistence compatibility
     /// </summary>
     /// <exception cref="ArgumentException">Thrown when data is invalid</exception>
-    /// <exception cref="ArgumentNullException">Thrown when pet or appointment is null</exception>
-    public MedicalRecord(int id, Pet pet, Appointment appointment, string diagnosis, 
-                        string treatment, string notes)
+    /// <exception cref="ArgumentNullException">Thrown when pet is null</exception>
+    public MedicalRecord(int id, int appointmentId, Pet pet, string diagnosis, 
+                        string treatment, DateTime visitDate)
     {
         if (id <= 0)
             throw new ArgumentException("ID must be positive", nameof(id));
+
+        if (appointmentId <= 0)
+            throw new ArgumentException("Appointment ID must be positive", nameof(appointmentId));
         
         if (pet == null)
             throw new ArgumentNullException(nameof(pet), "Medical record must have a pet");
-        
-        if (appointment == null)
-            throw new ArgumentNullException(nameof(appointment), "Medical record must be linked to an appointment");
-        
-        if (appointment.Status != AppointmentStatus.Completed)
-            throw new ArgumentException("Medical record can only be created for completed appointments", 
-                                      nameof(appointment));
         
         if (string.IsNullOrWhiteSpace(diagnosis))
             throw new ArgumentException("Diagnosis cannot be empty", nameof(diagnosis));
@@ -45,23 +42,22 @@ public class MedicalRecord
         
         if (treatment.Length > 1000)
             throw new ArgumentException("Treatment description is too long (max 1000 characters)", nameof(treatment));
-        
-        // Notes are optional, but if provided, validate length
-        if (!string.IsNullOrWhiteSpace(notes) && notes.Length > 1000)
-            throw new ArgumentException("Notes are too long (max 1000 characters)", nameof(notes));
+
+        if (visitDate > DateTime.Now)
+            throw new ArgumentException("Visit date cannot be in the future", nameof(visitDate));
 
         Id = id;
+        AppointmentId = appointmentId;
         Pet = pet;
-        Appointment = appointment;
         Diagnosis = diagnosis.Trim();
         Treatment = treatment.Trim();
-        Notes = notes?.Trim() ?? string.Empty;
-        RecordDate = DateTime.Now;
+        VisitDate = visitDate;
+        RecordedAt = DateTime.Now;
     }
 
     public override string ToString()
     {
-        return $"Medical Record ID: {Id}, Pet: {Pet.Name}, Date: {RecordDate:yyyy-MM-dd}, " +
+        return $"Medical Record ID: {Id}, Pet: {Pet.Name}, Date: {VisitDate:yyyy-MM-dd}, " +
                $"Diagnosis: {Diagnosis}";
     }
 }
