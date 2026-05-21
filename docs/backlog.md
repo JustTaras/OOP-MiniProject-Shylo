@@ -27,40 +27,64 @@
 
 ---
 
-## Iteration 2 (Lab 35) - Medical Records & Extended Views 📋 PLANNED
+## Iteration 2 (Lab 35) - Business Logic, Medical Records & Analytics ✅ COMPLETE
 
 ### Must Have
-- [ ] Create medical records after appointment completion
-- [ ] View medical history for a pet
-- [ ] Display diagnosis and treatment in medical records
-- [ ] Link appointments to medical records
-- [ ] Extended service methods for medical record operations
-- [ ] Tests for medical record operations (10+ new tests)
-- [ ] Update iteration-1.md → iteration-2.md
+- [x] Create medical records after appointment completion
+- [x] View medical history for a pet (sorted by date, newest first)
+- [x] Display diagnosis and treatment in medical records
+- [x] Link appointments to medical records via AppointmentId
+- [x] Extended service methods for medical record operations
+- [x] Business rules: Cannot create record for non-completed appointment
+- [x] Diagnosis/Treatment validation (length, non-empty)
+- [x] Tests for medical record operations (45 total tests, 100% passing)
+- [x] Update docs/iteration-1.md → docs/iteration-2.md
+- [x] JSON persistence with asynchronous I/O
+- [x] LINQ-based analytics queries (5+ queries)
+- [x] Strategy Pattern implementation (2 severity scorers + factory)
 
 ### Nice to Have
-- [ ] Medical record search by date range
-- [ ] Export appointment/medical history
-- [ ] Medical statistics (most common diagnoses)
+- [x] Medical record search by date range
+- [x] Medical statistics (most common diagnoses, vet workload analysis)
+- [x] Console UI extensions (9 menu options instead of 5)
+- [x] Multi-criteria appointment search (owner, pet, status, date)
+- [x] Veterinarian utilization metrics
+- [x] Strategy runtime swapping without code changes
+
+### Completed Status
+✅ **All Must Have**: Completed
+✅ **All Nice to Have**: Completed (exceeded expectations)
+✅ **Test Coverage**: 45/45 tests passing
+✅ **Build Status**: All 5 projects compile
+✅ **Documentation**: iteration-2.md with handoff notes
 
 ---
 
-## Iteration 3 (Lab 36) - Persistence Layer 📋 PLANNED
+## Iteration 3 (Lab 36) - Database Persistence & Integration Tests 📋 PLANNED
 
 ### Must Have
 - [ ] Set up SQL Server or PostgreSQL database
 - [ ] Entity Framework Core integration
-- [ ] Database schema design & migrations
-- [ ] SQL-based repository implementation (IAppointmentRepository)
-- [ ] Connection string configuration
-- [ ] Data seed with sample clinics
-- [ ] Integration tests with real database
+- [ ] Database schema design & migrations (preserve data model)
+- [ ] SQL-based repository implementation (IAppointmentRepository adapter)
+- [ ] Connection string configuration & secrets management
+- [ ] Data seed with sample clinics & veterinarians
+- [ ] Integration tests with real database (not in-memory)
 - [ ] Performance optimization (indexing, query optimization)
+- [ ] Concurrent access handling (transactions, locks)
 
 ### Nice to Have
 - [ ] Database backup/restore functionality
-- [ ] Audit logging for record changes
-- [ ] Data validation in database constraints
+- [ ] Audit logging for record changes (who, when, what changed)
+- [ ] Data validation in database constraints (replicate domain rules)
+- [ ] Stored procedures for complex queries
+- [ ] View objects for reporting
+
+### Expected Challenges (from Lab 35)
+- Large datasets: Current LINQ may slow with 10K+ records → need pagination
+- Concurrent appointments: File-based repo not thread-safe → need transactions
+- Data corruption: Test with manually corrupted JSON files
+- Timezone handling: Use UTC instead of DateTime.Now
 
 ---
 
@@ -69,27 +93,28 @@
 ### Must Have
 - [ ] Windows Forms or WPF GUI application
 - [ ] User authentication (login/roles)
-- [ ] Vet/Receptionist/Admin role-based access
-- [ ] Advanced reporting (appointments per vet, busiest days, etc.)
+- [ ] Vet/Receptionist/Admin role-based access control
+- [ ] Advanced reporting dashboard
 - [ ] Appointment rescheduling
 - [ ] Payment tracking for services
+- [ ] Report export (PDF, CSV)
 
 ### Nice to Have
 - [ ] Email notifications for appointments
 - [ ] Backup & restore from UI
-- [ ] Analytics dashboard
+- [ ] Analytics dashboard with charts
 - [ ] SMS reminders
+- [ ] Appointment confirmations
 
 ---
 
 ## Potential Future Extensions (Lab 38+) 💡 OPTIONAL
 
-- [ ] Design Patterns: Strategy (pricing), Observer (notifications), Decorator (service add-ons), Facade (complex queries)
-- [ ] Factory pattern for appointment/record creation
+- [ ] Design Patterns: Observer (notifications), Decorator (service add-ons)
+- [ ] Additional Strategy implementations (more severity scorers)
 - [ ] Delegates/Events for menu actions
 - [ ] IDisposable for resource management
-- [ ] Operator overloading for Pet/Appointment comparisons
 - [ ] RESTful API with ASP.NET Core
 - [ ] Microservices architecture
-- [ ] Mobile app (Xamarin/MAUI)
+- [ ] Mobile app (MAUI)
 - [ ] Real-time appointments (SignalR)
