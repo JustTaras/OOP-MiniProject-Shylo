@@ -44,7 +44,7 @@ public class MedicalRecordService
                 pet,
                 diagnosis,
                 treatment,
-                appointment.AppointmentDateTime);
+                DateTime.Now);  // Medical record visit date is when it's created, not when appointment was scheduled
 
             _repository.AddMedicalRecord(record);
 

@@ -36,10 +36,12 @@ public class AnalyticsService
         var upcomingCount = allAppointments.Count(a => a.Status == AppointmentStatus.Scheduled);
 
         // Calculate average appointments per month (from completed appointments)
-        var appointmentsByMonth = completedAppointments
-            .GroupBy(a => new { a.AppointmentDateTime.Year, a.AppointmentDateTime.Month })
-            .Select(g => g.Count())
-            .Average();
+        var appointmentsByMonth = completedAppointments.Count > 0
+            ? completedAppointments
+                .GroupBy(a => new { a.AppointmentDateTime.Year, a.AppointmentDateTime.Month })
+                .Select(g => g.Count())
+                .Average()
+            : 0;
 
         // Get most common diagnoses (from medical records)
         var medicalRecords = _repository.GetAllMedicalRecords()
