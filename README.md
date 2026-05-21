@@ -17,6 +17,8 @@ dotnet build
 # Консольний додаток з меню
 dotnet run --project src/VetClinic.Console
 
+Запуски_програми_в_консолі.png
+
 # Запуск всіх 45 тестів
 dotnet test
 ```
