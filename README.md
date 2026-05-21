@@ -17,7 +17,13 @@ dotnet build
 # Консольний додаток
 dotnet run --project src/VetClinic.Console
 
+<<<<<<< Updated upstream
 # Тести
+=======
+Запуск_програми_в_консолі.png
+
+# Запуск всіх 45 тестів
+>>>>>>> Stashed changes
 dotnet test
 ```
 
