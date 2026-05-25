@@ -1,53 +1,63 @@
-# Test Strategy for VetClinic - Lab 36 (Iteration 3)
+# Стратегія тестування - VetClinic
 
-## 1. Critical Scenarios (Must Test)
+## 1. Критичні сценарії (Високий пріоритет)
 
-### Domain Invariants (High Priority)
-- **Appointment Time Validation**: Future date requirement, appointment/vet conflicts
-- **Medical Record Constraints**: Non-empty diagnosis/treatment, max length boundaries (500/1000 chars)
-- **Pet & Owner Data**: Valid species, name constraints, circular dependencies
-- **Status Transitions**: Scheduled → Completed → (blocked), Scheduled → Cancelled → (blocked)
-- **Veterinarian Capacity**: No simultaneous appointments
+### Інваріанти домену
+- Дата запису в майбутньому
+- Конфлікти записів ветеринара
+- Медичні записи: 1-500 символів (діагноз), 1-1000 (лікування)
+- Видові обмеження (Species)
+- Переходи статусу (Scheduled → Completed → ✗, Scheduled → Cancelled → ✗)
 
-### Business Rules (High Priority)
-- **Rule 1**: Medical records can only be created for COMPLETED appointments
-- **Rule 2**: Diagnosis must be non-empty and ≤500 characters
-- **Rule 3**: Treatment must be non-empty and ≤1000 characters
-- **Rule 4**: Appointment date cannot be in the past/present
-- **Rule 5**: Vet cannot have overlapping appointments
-- **Rule 6**: Medical records sorted by date (newest first)
+### Бізнес-правила (6 критичних)
+1. Медичні записи тільки для завершених записів
+2. Діагноз non-empty, ≤ 500 символів
+3. Лікування non-empty, ≤ 1000 символів
+4. Дата запису не в минулому
+5. Без одночасних записів ветеринара
+6. Медичні записи датовані (найновіші першими)
 
-### Analytics & Reporting (Medium Priority)
-- **LINQ Query 1**: Veterinarian statistics (total, completed, cancelled, upcoming, avg/month, diagnoses)
-- **LINQ Query 2**: Pet medical history with filtering
-- **LINQ Query 3**: Appointment search (multi-criteria)
-- **LINQ Query 4**: Clinic statistics (completion rate, cancellation rate, busiest vet)
-- **LINQ Query 5**: Veterinarian workload distribution
+### LINQ запити (5 запитів)
+1. Vet stats (загальна, завершено, скасовано, майбутнього, avg/month)
+2. Pet історія з фільтруванням
+3. Pошук записів (multi-criteria)
+4. Clinic stats (completion rate, cancellation rate)
+5. Workload distribution
 
-### Strategy Pattern (Medium Priority)
-- **KeywordBasedSeverityScorer**: High keywords vs. general terms
-- **LengthBasedSeverityScorer**: Diagnosis length mapping
-- **Runtime switching**: Strategy replacement without reloading
+### Strategy паттерн
+- KeywordBasedScorer (ключові слова)
+- LengthBasedScorer (довжина)
+- Runtime switching
 
-### Persistence & I/O (High Priority - Fault-Critical)
-- **File-based persistence**: Save and load JSON data
-- **Atomic writes**: No partial saves, atomicity on concurrent access
-- **Data corruption handling**: Malformed JSON, missing files
-- **Round-trip integrity**: Save → Load → Data equality
+### Персистентність (Fault-Critical)
+- JSON save/load
+- Атомарні записи
+- Обробка корупції
+- Round-trip целісність
 
-## 2. Hard-to-Test Code Zones & Solutions
+## 2. Важко-тестовані зони & Рішення
 
-### Zone 1: JsonDataStore (I/O & File System)
-**Problem**: Direct file I/O, environment-dependent paths
-**Solution**:
-- Use `Path.GetTempPath()` for test isolation
-- Mock `IDataStore<T>` interface where possible
-- Create temporary files/directories per test
-- Use `try-finally` to clean up test artifacts
+### Zone 1: JSON I/O
+**Проблема**: Прямий файловий I/O, environment-залежні шляхи
+**Рішення**: Temp файли, cleanup, mock IDataStore
 
-### Zone 2: ClinicApp Console UI (User Input/Output)
-**Problem**: Direct console.ReadLine(), console.WriteLine()
-**Solution**:
+### Zone 2: Console UI
+**Проблема**: console.ReadLine(), console.WriteLine()
+**Рішення**: DI для IInputOutput, test harness
+
+## 3. Мета покриття
+
+| Шар | Мета | Статус |
+|-----|------|--------|
+| Domain | 80% | ✅ 82% |
+| Application | 75% | ✅ 75% |
+| Infrastructure | 50% | ✅ 56% |
+
+## 4. Тести за категоріями
+
+- Unit: 84 (domain + services)
+- Integration: 8 (file persistence)
+- Fault: 15 (null, state violations)
 - Test CLI through `AppointmentService` and `AnalyticsService` instead
 - Assume UI correctly calls business logic
 - Focus on service layer, not presentation

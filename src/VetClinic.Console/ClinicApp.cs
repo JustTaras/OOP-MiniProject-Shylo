@@ -6,9 +6,17 @@ using VetClinic.Application.Strategies;
 using VetClinic.Infrastructure.Persistence;
 
 /// <summary>
-/// Main console application for VetClinic (Lab 35 Extended)
-/// Demonstrates multiple use cases: appointment scheduling, medical records, analytics
+/// Main console application orchestrator for VetClinic (Lab 35-36)
+/// Coordinates user interaction, menu navigation, and service layer communication.
+/// Demonstrates appointment scheduling, medical records management, analytics, and persistence.
 /// </summary>
+/// <remarks>
+/// Lab 37 Refactoring Note:
+/// - ClinicApp acts as application orchestrator
+/// - Menu display and option handling remain here for simplicity
+/// - Future extraction: MenuHandler controller for better testability
+/// - Current design prioritizes educational clarity over maximum separation
+/// </remarks>
 public class ClinicApp
 {
     private readonly AppointmentService _appointmentService;

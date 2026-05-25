@@ -1,103 +1,50 @@
-# Test Matrix - Use Cases to Test Mapping (Lab 36)
+# Матриця тестів - Use Cases до тестів (Lab 36)
 
-## Overview
-This document maps all user-facing use cases to their corresponding unit and integration tests, ensuring comprehensive coverage of all business scenarios.
+## Огляд
 
----
-
-## Use Case 1: Schedule Appointment
-
-### Scenario 1.1: Schedule Valid Appointment
-**User Goal**: Book an appointment for pet with veterinarian on a future date
-
-**Steps**:
-1. Enter pet name (lookup)
-2. Select veterinarian
-3. Choose future date/time
-4. Enter reason for visit
-
-**Business Rules**:
-- BR1: Appointment date must be future
-- BR2: Veterinarian must be available (no overlapping appointments)
-- BR3: All fields required
-
-| Test Case | Class | Method | Coverage |
-|-----------|-------|--------|----------|
-| Valid data | `AppointmentServiceVeterinarianAvailabilityTests` | `ScheduleAppointment_VeterinarianAvailable_Succeeds` | ✅ |
-| Future date validation | `AppointmentInvariantsEdgeCasesTests` | `Appointment_MinimumValidId_CreatedSuccessfully` | ✅ |
-| Reason max length | `AppointmentInvariantsEdgeCasesTests` | `Appointment_ReasonMaxLength_CreatedSuccessfully` | ✅ |
-
-### Scenario 1.2: Schedule with Unavailable Veterinarian
-**User Goal**: System prevents double-booking
-
-**Steps**:
-1. Try to schedule two pets with same vet at same time
-2. System should reject second booking
-
-| Test Case | Class | Method | Coverage |
-|-----------|-------|--------|----------|
-| Vet not available | `AppointmentServiceVeterinarianAvailabilityTests` | `ScheduleAppointment_VeterinarianNotAvailable_Fails` | ✅ |
-| Different vets OK | `AppointmentServiceVeterinarianAvailabilityTests` | `ScheduleAppointment_DifferentVeterinarians_BothSucceed` | ✅ |
-
-### Scenario 1.3: Invalid Appointment Data
-**User Goal**: System validates all input
-
-| Test Case | Class | Method | Coverage |
-|-----------|-------|--------|----------|
-| Past date | `AppointmentInvariantsEdgeCasesTests` | `Appointment_DateTimePast_ThrowsException` | ✅ |
-| Present time | `AppointmentInvariantsEdgeCasesTests` | `Appointment_DateTimePresent_ThrowsException` | ✅ |
-| Empty reason | `AppointmentInvariantsEdgeCasesTests` | `Appointment_ReasonEmpty_ThrowsException` | ✅ |
-| Null pet | `AppointmentInvariantsEdgeCasesTests` | `Appointment_PetNull_ThrowsException` | ✅ |
-| Null vet | `AppointmentInvariantsEdgeCasesTests` | `Appointment_VeterinarianNull_ThrowsException` | ✅ |
-| Invalid ID | `AppointmentInvariantsEdgeCasesTests` | `Appointment_InvalidId_Zero_ThrowsException` | ✅ |
+Це відображає use cases до юніт та integration тестів.
 
 ---
 
-## Use Case 2: Complete Appointment
+## Use Case 1: Планування запису
 
-### Scenario 2.1: Mark Appointment Complete
-**User Goal**: Change appointment status from Scheduled to Completed
+### Сценарій 1.1: Валідний запис
+**Мета**: Записати тварину до ветеринара на майбутню дату
 
-**Steps**:
-1. Find scheduled appointment
-2. Click "Complete"
-3. System updates status
+| Тест | Клас | Метод |
+|------|------|-------|
+| Valid data | `AppointmentServiceVeterinarianAvailabilityTests` | `ScheduleAppointment_VeterinarianAvailable_Succeeds` ✅ |
+| Future date | `AppointmentInvariantsEdgeCasesTests` | `Appointment_MinimumValidId_CreatedSuccessfully` ✅ |
 
-| Test Case | Class | Method | Coverage |
-|-----------|-------|--------|----------|
-| Status transition | `AppointmentStatusTransitionTests` | `Appointment_Complete_ScheduledToCompleted_Succeeds` | ✅ |
-| Initial status | `AppointmentStatusTransitionTests` | `Appointment_InitialStatus_IsScheduled` | ✅ |
+### Сценарій 1.2: Недоступний ветеринар
+| Тест | Клас | Метод |
+|------|------|-------|
+| Vet not available | `AppointmentServiceVeterinarianAvailabilityTests` | `ScheduleAppointment_VeterinarianNotAvailable_Fails` ✅ |
 
-### Scenario 2.2: Cannot Complete Already-Completed
-**User Goal**: System prevents invalid state transitions
+### Сценарій 1.3: Невалідні дані
+| Тест | Метод |
+|------|-------|
+| Past date | `Appointment_DateTimePast_ThrowsException` ✅ |
+| Empty reason | `Appointment_ReasonEmpty_ThrowsException` ✅ |
+| Null pet | `Appointment_PetNull_ThrowsException` ✅ |
 
-| Test Case | Class | Method | Coverage |
-|-----------|-------|--------|----------|
-| Double complete blocked | `AppointmentStatusTransitionTests` | `Appointment_Cancel_ThenComplete_ThrowsException` | ✅ |
+## Use Case 2: Завершити запис
+
+| Тест | Метод |
+|------|-------|
+| Status transition | `Appointment_Complete_ScheduledToCompleted_Succeeds` ✅ |
+| Initial status | `Appointment_InitialStatus_IsScheduled` ✅ |
+
+## Use Case 3: Скасувати запис
+
+| Тест | Метод |
+|------|-------|
+| Cancel scheduled | `Appointment_Cancel_ScheduledToCancelled_Succeeds` ✅ |
+| Cannot cancel completed | `Appointment_Complete_ThenCancel_ThrowsException` ✅ |
 
 ---
 
-## Use Case 3: Cancel Appointment
-
-### Scenario 3.1: Cancel Scheduled Appointment
-**User Goal**: Cancel future appointment
-
-**Steps**:
-1. Find scheduled appointment
-2. Click "Cancel"
-3. Status changes to Cancelled
-
-| Test Case | Class | Method | Coverage |
-|-----------|-------|--------|----------|
-| Cancel scheduled | `AppointmentStatusTransitionTests` | `Appointment_Cancel_ScheduledToCancelled_Succeeds` | ✅ |
-| Idempotent cancel | `AppointmentStatusTransitionTests` | `Appointment_Cancel_ThenCancel_IsIdempotent` | ✅ |
-
-### Scenario 3.2: Cannot Cancel Completed
-**User Goal**: System enforces business rule - no refunds after service
-
-| Test Case | Class | Method | Coverage |
-|-----------|-------|--------|----------|
-| Cannot cancel completed | `AppointmentStatusTransitionTests` | `Appointment_Complete_ThenCancel_ThrowsException` | ✅ |
+**Статус**: 129 тестів, 100% успіх ✅
 
 ---
 
