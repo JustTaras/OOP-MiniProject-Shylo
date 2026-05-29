@@ -17,25 +17,41 @@ public class AnalyticsService
 
     // LINQ Query 1: Veterinarian statistics
     /// <summary>
-    /// Get comprehensive statistics for a veterinarian
+    /// Get comprehensive statistics for a veterinarian including workload analysis and recent activity.
+    /// 
+    /// LINQ Techniques Demonstrated:
+    /// - Where: Filter by veterinarian and appointment status
+    /// - GroupBy: Aggregate appointments by year-month
+    /// - Count: Tally appointments by status
+    /// - Average: Calculate average appointments per month
+    /// - OrderByDescending/Take: Get most common diagnoses
+    /// 
     /// Business Rule: Statistics calculated only from completed appointments
     /// </summary>
+    /// <param name="vet">The veterinarian to analyze</param>
+    /// <returns>Comprehensive statistics including appointment counts, trends, and diagnoses</returns>
+    /// <exception cref="ArgumentNullException">Thrown if vet is null</exception>
     public VeterinarianStatistics GetVeterinarianStatistics(Veterinarian vet)
     {
         if (vet == null)
             throw new ArgumentNullException(nameof(vet));
 
+        // Get all appointments for this veterinarian
         var allAppointments = _repository.GetByVeterinarian(vet);
+        
+        // Filter to only completed appointments for statistical analysis
         var completedAppointments = allAppointments
             .Where(a => a.Status == AppointmentStatus.Completed)
             .ToList();
 
+        // Count appointments by status for dashboard display
         var totalAppointments = allAppointments.Count;
         var completedCount = completedAppointments.Count;
         var cancelledCount = allAppointments.Count(a => a.Status == AppointmentStatus.Cancelled);
         var upcomingCount = allAppointments.Count(a => a.Status == AppointmentStatus.Scheduled);
 
-        // Calculate average appointments per month (from completed appointments)
+        // Calculate average workload: group completed appointments by year-month, 
+        // count appointments in each month, then average (useful for capacity planning)
         var appointmentsByMonth = completedAppointments.Count > 0
             ? completedAppointments
                 .GroupBy(a => new { a.AppointmentDateTime.Year, a.AppointmentDateTime.Month })
@@ -43,7 +59,8 @@ public class AnalyticsService
                 .Average()
             : 0;
 
-        // Get most common diagnoses (from medical records)
+        // Get most common diagnoses for this vet (cross-reference appointments with medical records)
+        // This requires nested lookup since MedicalRecord links to Appointment, not directly to Vet
         var medicalRecords = _repository.GetAllMedicalRecords()
             .Where(r => 
             {
@@ -52,6 +69,8 @@ public class AnalyticsService
             })
             .ToList();
 
+        // Group diagnoses by text, count occurrences, get top 5 most common
+        // (useful for identifying specialist focus areas)
         var mostCommonDiagnoses = medicalRecords
             .GroupBy(r => r.Diagnosis)
             .OrderByDescending(g => g.Count())
@@ -59,7 +78,8 @@ public class AnalyticsService
             .Take(5)
             .ToList();
 
-        // Get recent activity (last 5 completed appointments)
+        // Get recent activity: sort completed appointments by most recent, take last 5
+        // (useful for status overview and recent workload assessment)
         var recentAppointments = completedAppointments
             .OrderByDescending(a => a.AppointmentDateTime)
             .Take(5)
@@ -80,9 +100,19 @@ public class AnalyticsService
 
     // LINQ Query 2: Pet medical history with filtering
     /// <summary>
-    /// Get detailed pet medical profile including all treatments
-    /// Demonstrates: Where, Select, OrderBy, GroupBy
+    /// Get detailed pet medical profile including all treatments and diagnosis trends.
+    /// 
+    /// LINQ Techniques Demonstrated:
+    /// - Where: Filter completed appointments and medical records by pet
+    /// - OrderByDescending: Chronologically sort appointments and records
+    /// - Select: Project diagnoses from records
+    /// - Distinct: Get unique diagnoses
+    /// - GroupBy: Count diagnosis frequency
+    /// 
     /// </summary>
+    /// <param name="pet">The pet to profile</param>
+    /// <returns>Complete medical profile with appointment history and diagnosis trends</returns>
+    /// <exception cref="ArgumentNullException">Thrown if pet is null</exception>
     public PetMedicalProfile GetPetMedicalProfile(Pet pet)
     {
         if (pet == null)
@@ -129,9 +159,24 @@ public class AnalyticsService
 
     // LINQ Query 3: Search appointments by multiple criteria
     /// <summary>
-    /// Advanced search for appointments using multiple filters
-    /// Demonstrates: Where with multiple conditions, Select
+    /// Advanced search for appointments using flexible multi-criteria filtering.
+    /// All parameters are optional; only provided filters are applied.
+    /// 
+    /// LINQ Techniques Demonstrated:
+    /// - AsEnumerable: LINQ-to-Objects evaluation
+    /// - Where: Chain multiple conditional filters
+    /// - StringComparison.OrdinalIgnoreCase: Case-insensitive matching
+    /// - OrderByDescending: Sort by most recent appointments first
+    /// 
+    /// Performance Note: AsEnumerable is intentional here to allow dynamic predicate chaining.
+    /// For large datasets (10K+ records), consider pagination or indexed database queries.
     /// </summary>
+    /// <param name="ownerName">Optional: Filter by owner name (partial match, case-insensitive)</param>
+    /// <param name="petName">Optional: Filter by pet name (partial match, case-insensitive)</param>
+    /// <param name="status">Optional: Filter by appointment status</param>
+    /// <param name="dateFrom">Optional: Filter appointments on or after this date</param>
+    /// <param name="dateTo">Optional: Filter appointments on or before this date</param>
+    /// <returns>Filtered and sorted list of appointments</returns>
     public IReadOnlyList<Appointment> SearchAppointments(
         string? ownerName = null,
         string? petName = null,
@@ -174,17 +219,29 @@ public class AnalyticsService
 
     // LINQ Query 4: Aggregate statistics
     /// <summary>
-    /// Get clinic-wide statistics
-    /// Demonstrates: Count, Average, GroupBy, OrderBy
+    /// Get clinic-wide statistics aggregating all appointments and patterns.
+    /// Provides comprehensive view of clinic operations for reporting and analysis.
+    /// 
+    /// LINQ Techniques Demonstrated:
+    /// - GroupBy: Aggregate by veterinarian, pet, appointment reason, and time period
+    /// - Count/Where: Calculate completion and cancellation rates
+    /// - OrderByDescending/Take: Extract top items (busiest vets, most visited pets)
+    /// - Select with calculated fields: Compute percentages and aggregations
+    /// 
+    /// Performance Note: This query iterates the appointment collection 4 times.
+    /// For datasets > 100K appointments, cache results or optimize with database views.
     /// </summary>
+    /// <returns>Complete clinic statistics including rates, trends, and rankings</returns>
     public ClinicStatistics GetClinicStatistics()
     {
+        // Partition appointments by status for independent analysis
         var allAppointments = _repository.GetAll();
         var completedAppointments = allAppointments.Where(a => a.Status == AppointmentStatus.Completed).ToList();
         var cancelledAppointments = allAppointments.Where(a => a.Status == AppointmentStatus.Cancelled).ToList();
         var scheduledAppointments = allAppointments.Where(a => a.Status == AppointmentStatus.Scheduled).ToList();
 
-        // Most active veterinarians
+        // Ranking 1: Group appointments by veterinarian, count per vet, get top 10
+        // Useful for identifying workload distribution and staffing needs
         var vetStats = allAppointments
             .GroupBy(a => a.Veterinarian)
             .Select(g => new { Vet = g.Key, Count = g.Count() })
@@ -192,7 +249,8 @@ public class AnalyticsService
             .Take(10)
             .ToList();
 
-        // Most visited pets
+        // Ranking 2: Group appointments by pet, count visits per pet, get top 10
+        // Identifies frequent visitors and repeat customers (loyalty indicator)
         var petStats = allAppointments
             .GroupBy(a => a.Pet)
             .Select(g => new { Pet = g.Key, Count = g.Count() })
@@ -200,7 +258,8 @@ public class AnalyticsService
             .Take(10)
             .ToList();
 
-        // Most common reasons for appointments
+        // Ranking 3: Group appointments by reason/complaint, count per reason, get top 10
+        // Shows most common health issues and guides resource allocation for supplies/expertise
         var reasonStats = allAppointments
             .GroupBy(a => a.Reason)
             .Select(g => new { Reason = g.Key, Count = g.Count() })
@@ -208,7 +267,8 @@ public class AnalyticsService
             .Take(10)
             .ToList();
 
-        // Appointments by month (last 12 months)
+        // Trend analysis: Group completed appointments by month (last 12 months)
+        // Format as "YYYY-MM" for easy reading and graphing
         var appointmentsByMonth = completedAppointments
             .Where(a => a.AppointmentDateTime >= DateTime.Now.AddMonths(-12))
             .GroupBy(a => new { a.AppointmentDateTime.Year, a.AppointmentDateTime.Month })
@@ -237,9 +297,19 @@ public class AnalyticsService
 
     // LINQ Query 5: Utilization analysis
     /// <summary>
-    /// Analyze veterinarian utilization and availability
-    /// Demonstrates: Where, GroupBy, Average
+    /// Analyze veterinarian utilization rates showing engagement and availability patterns.
+    /// Calculates completion ratio for each veterinarian to assess workload and efficiency.
+    /// 
+    /// LINQ Techniques Demonstrated:
+    /// - HashSet: Eliminate duplicate veterinarians from appointments
+    /// - Select: Transform vet references to detailed utilization metrics
+    /// - Count with predicate: Calculate conditional statistics
+    /// - OrderByDescending: Sort by highest utilization first
+    /// 
+    /// Business Insight: 100% utilization = all assigned appointments completed (no cancellations).
+    /// Low utilization may indicate understaffing or cancellations; high utilization indicates efficiency.
     /// </summary>
+    /// <returns>Utilization metrics for all veterinarians, ordered by completion rate</returns>
     public IReadOnlyList<VeterinarianUtilization> GetVeterinarianUtilization()
     {
         var vets = new HashSet<Veterinarian>(

@@ -1,83 +1,61 @@
-# Product Backlog
+# Беклог продукту
 
-## Iteration 1 (Lab 34) - Baseline ✅ COMPLETE
+## Ітерація 1 (Lab 34) - Основа ✅ ГОТОВО
 
-### Must Have
-- [x] Domain model with 5-8 classes (Owner, Pet, Veterinarian, Appointment, MedicalRecord)
-- [x] Enums for type safety (Species, AppointmentStatus)
-- [x] Domain invariants - prevent invalid object creation
-- [x] Encapsulation - properties with private setters and validation
-- [x] Repository interface (IAppointmentRepository)
-- [x] In-memory repository implementation
-- [x] Application service (AppointmentService) with business logic
-- [x] Result pattern for error handling
-- [x] Console UI menu with vertical slice
-- [x] One complete user scenario: Schedule Appointment
-- [x] Unit tests (minimum 15)
-- [x] Documentation (vision.md, backlog.md, diagrams)
-- [x] CI/CD pipeline (.github/workflows/dotnet.yml)
-- [x] .gitignore configuration
-
-### Nice to Have
-- [x] Multiple test classes covering different layers
-- [x] DemoDataFactory for sample data
-- [x] Detailed error messages to users
-- [x] View appointments by pet/veterinarian
-- [x] Veterinarian availability checking
+- [x] Домен: 5+ класів
+- [x] Перерахування: Species, AppointmentStatus
+- [x] Інваріанти домену
+- [x] Repository паттерн
+- [x] AppointmentService
+- [x] UI: 5 меню опцій
+- [x] 15+ тестів
+- [x] CI/CD pipeline
 
 ---
 
-## Iteration 2 (Lab 35) - Business Logic, Medical Records & Analytics ✅ COMPLETE
+## Ітерація 2 (Lab 35) - Логіка & Аналітика ✅ ГОТОВО
 
-### Must Have
-- [x] Create medical records after appointment completion
-- [x] View medical history for a pet (sorted by date, newest first)
-- [x] Display diagnosis and treatment in medical records
-- [x] Link appointments to medical records via AppointmentId
-- [x] Extended service methods for medical record operations
-- [x] Business rules: Cannot create record for non-completed appointment
-- [x] Diagnosis/Treatment validation (length, non-empty)
-- [x] Tests for medical record operations (45 total tests, 100% passing)
-- [x] Update docs/iteration-1.md → docs/iteration-2.md
-- [x] JSON persistence with asynchronous I/O
-- [x] LINQ-based analytics queries (5+ queries)
-- [x] Strategy Pattern implementation (2 severity scorers + factory)
-
-### Nice to Have
-- [x] Medical record search by date range
-- [x] Medical statistics (most common diagnoses, vet workload analysis)
-- [x] Console UI extensions (9 menu options instead of 5)
-- [x] Multi-criteria appointment search (owner, pet, status, date)
-- [x] Veterinarian utilization metrics
-- [x] Strategy runtime swapping without code changes
-
-### Completed Status
-✅ **All Must Have**: Completed
-✅ **All Nice to Have**: Completed (exceeded expectations)
-✅ **Test Coverage**: 45/45 tests passing
-✅ **Build Status**: All 5 projects compile
-✅ **Documentation**: iteration-2.md with handoff notes
+- [x] Медичні записи (пов'язані з записами)
+- [x] Історія хвороб (датована)
+- [x] 5 LINQ запитів (аналітика)
+- [x] JSON персистентність
+- [x] Strategy паттерн (DiagnosisSeverityScorer)
+- [x] UI: 9 меню опцій
+- [x] 45 тестів
+- [x] Розширена документація
 
 ---
 
-## Iteration 3 (Lab 36) - Database Persistence & Integration Tests 📋 PLANNED
+## Ітерація 3 (Lab 36) - Тестування & Якість ✅ ГОТОВО
 
-### Must Have
-- [ ] Set up SQL Server or PostgreSQL database
-- [ ] Entity Framework Core integration
-- [ ] Database schema design & migrations (preserve data model)
-- [ ] SQL-based repository implementation (IAppointmentRepository adapter)
-- [ ] Connection string configuration & secrets management
-- [ ] Data seed with sample clinics & veterinarians
-- [ ] Integration tests with real database (not in-memory)
-- [ ] Performance optimization (indexing, query optimization)
-- [ ] Concurrent access handling (transactions, locks)
+- [x] 84 нових тестів (129 всього)
+- [x] 68.51% покриття коду
+- [x] Integration тести
+- [x] Fault handling тести
+- [x] 100% success rate
+- [x] Бенчмарки продуктивності
 
-### Nice to Have
-- [ ] Database backup/restore functionality
-- [ ] Audit logging for record changes (who, when, what changed)
-- [ ] Data validation in database constraints (replicate domain rules)
-- [ ] Stored procedures for complex queries
+---
+
+## Ітерація 4 (Lab 37) - Релік & Документація ✅ ГОТОВО
+
+- [x] План релізу v1.0.0
+- [x] Фінальний рефакторинг
+- [x] 13 документів
+- [x] DEMO сценарій
+- [x] Defense Q&A
+- [x] Аналіз продуктивності
+
+---
+
+## Відстрочено (v2.0+)
+
+- [ ] SQL Server база даних
+- [ ] GUI (WPF)
+- [ ] Автентикація
+- [ ] API
+- [ ] Шифрування
+- [ ] Мульти-клініка підтримка
 - [ ] View objects for reporting
 
 ### Expected Challenges (from Lab 35)
