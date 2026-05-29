@@ -9,38 +9,38 @@ VetClinic v1.0.0 - перший стабільний релік системи �
 ### Додано
 
 #### Lab 34 - Основа
-- ✅ Домен: Appointment, Pet, Owner, Veterinarian, MedicalRecord
-- ✅ Перерахування: AppointmentStatus, Species
-- ✅ Repository паттерн: IAppointmentRepository
-- ✅ Послуга: AppointmentService
-- ✅ UI: 5 меню опцій
-- ✅ Тести: 15+
-- ✅ GitHub Actions CI/CD
+- Домен: Appointment, Pet, Owner, Veterinarian, MedicalRecord
+- Перерахування: AppointmentStatus, Species
+- Repository паттерн: IAppointmentRepository
+- Послуга: AppointmentService
+- UI: 5 меню опцій
+- Тести: 15+
+- GitHub Actions CI/CD
 
 #### Lab 35 - Логіка & Аналітика
-- ✅ Медичні записи (пов'язані з записами)
-- ✅ **5 LINQ запитів**:
+- Медичні записи (пов'язані з записами)
+- 5 LINQ запитів:
   - Статистика ветеринарів
   - Профілі тварин
   - Розширений пошук
   - Статистика клініки
   - Аналіз утилізації
-- ✅ JSON персистентність (async I/O)
-- ✅ Strategy паттерн: DiagnosisSeverityScorer
-- ✅ UI: 9 меню опцій
-- ✅ Тести: 45 загалом
+- JSON персистентність (async I/O)
+- Strategy паттерн: DiagnosisSeverityScorer
+- UI: 9 меню опцій
+- Тести: 45 загалом
 
 #### Lab 36 - Тестування & Якість
-- ✅ 129 тестів (84 unit + 8 integration + 15 fault)
-- ✅ 68.51% покриття (Domain 82%, App 75%, Infra 56%)
-- ✅ 100% успіх, ~363 мс
-- ✅ Test Factory для фіксур
-- ✅ Параметризовані тести
+- 129 тестів (84 unit + 8 integration + 15 fault)
+- 68.51% покриття (Domain 82%, App 75%, Infra 56%)
+- 100% успіх, ~363 мс
+- Test Factory для фіксур
+- Параметризовані тести
 
 #### Lab 37 - Релік & Документація
-- ✅ 10+ документів: README, USER_GUIDE, DEVELOPER_GUIDE, DEMO, etc.
-- ✅ Покращена XML документація
-- ✅ 0 breaking changes
+- 10+ документів: README, USER_GUIDE, DEVELOPER_GUIDE, DEMO, etc.
+- Покращена XML документація
+- 0 breaking changes
 
 ### Залежності
 

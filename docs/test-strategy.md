@@ -49,9 +49,9 @@
 
 | Шар | Мета | Статус |
 |-----|------|--------|
-| Domain | 80% | ✅ 82% |
-| Application | 75% | ✅ 75% |
-| Infrastructure | 50% | ✅ 56% |
+| Domain | 80% | 82% |
+| Application | 75% | 75% |
+| Infrastructure | 50% | 56% |
 
 ## 4. Тести за категоріями
 
@@ -79,20 +79,20 @@
 ## 3. Mock vs. Real Integration Strategy
 
 ### Use Real Implementation:
-- ✅ `InMemoryAppointmentRepository` (already exists, in-memory, safe)
-- ✅ Domain entity constructors (validation logic must be real)
-- ✅ Status transitions (state machine validation is critical)
-- ✅ LINQ queries (test against actual collections)
+- `InMemoryAppointmentRepository` (already exists, in-memory, safe)
+- Domain entity constructors (validation logic must be real)
+- Status transitions (state machine validation is critical)
+- LINQ queries (test against actual collections)
 
 ### Use Mocks:
-- ❌ File I/O (use temp directories instead - better than mocks)
-- ❌ `IAppointmentRepository` in isolation tests (but already have InMemory version)
-- ✅ `IDiagnosisSeverityScorer` for testing service that depends on it
+- File I/O (use temp directories instead - better than mocks)
+- `IAppointmentRepository` in isolation tests (but already have InMemory version)
+- `IDiagnosisSeverityScorer` for testing service that depends on it
 
 ### Integration Tests (Real Flow):
-- ✅ Save appointment → Complete → Create medical record → Load from file
-- ✅ Multi-step: Create vet → Create pet → Book appointment → Complete → Add medical record
-- ✅ Analytics queries on in-memory + file-loaded data
+- Save appointment → Complete → Create medical record → Load from file
+- Multi-step: Create vet → Create pet → Book appointment → Complete → Add medical record
+- Analytics queries on in-memory + file-loaded data
 
 ## 4. Negative/Fault Scenarios (Risk Zones)
 

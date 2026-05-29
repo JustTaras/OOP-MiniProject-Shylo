@@ -84,23 +84,23 @@ public class ClinicApp
                     break;
                 case "9":
                     running = false;
-                    System.Console.WriteLine("\n✅ Saving data before exit...");
+                    System.Console.WriteLine("\n Saving data before exit...");
                     if (_repository is FileBasedAppointmentRepository fileRepo)
                     {
                         try
                         {
                             await fileRepo.PersistAsync(_owners, _pets, _veterinarians);
-                            System.Console.WriteLine("✅ Data saved successfully!");
+                            System.Console.WriteLine(" Data saved successfully!");
                         }
                         catch (Exception ex)
                         {
-                            System.Console.WriteLine($"❌ Error saving data: {ex.Message}");
+                            System.Console.WriteLine($" Error saving data: {ex.Message}");
                         }
                     }
                     System.Console.WriteLine("\nThank you for using VetClinic! Goodbye!\n");
                     break;
                 default:
-                    System.Console.WriteLine("\n❌ Invalid choice. Please try again.\n");
+                    System.Console.WriteLine("\n Invalid choice. Please try again.\n");
                     break;
             }
         }
@@ -109,19 +109,19 @@ public class ClinicApp
     private void DisplayMainMenu()
     {
         System.Console.WriteLine("\n" + new string('=', 60));
-        System.Console.WriteLine("      🏥 VET CLINIC MANAGEMENT SYSTEM - LAB 35 🏥");
+        System.Console.WriteLine("       VET CLINIC MANAGEMENT SYSTEM - LAB 35 ");
         System.Console.WriteLine(new string('=', 60));
-        System.Console.WriteLine("📅 APPOINTMENTS:");
+        System.Console.WriteLine(" APPOINTMENTS:");
         System.Console.WriteLine("  1. Schedule New Appointment");
         System.Console.WriteLine("  2. View All Appointments");
         System.Console.WriteLine("  3. View Pet Appointments");
         System.Console.WriteLine("  4. View Veterinarian Appointments");
-        System.Console.WriteLine("\n💊 MEDICAL RECORDS (Lab 35):");
+        System.Console.WriteLine("\n MEDICAL RECORDS (Lab 35):");
         System.Console.WriteLine("  5. Complete Appointment & Create Medical Record");
         System.Console.WriteLine("  6. View Pet Medical History");
-        System.Console.WriteLine("\n📊 ANALYTICS & REPORTS (Lab 35):");
+        System.Console.WriteLine("\n ANALYTICS & REPORTS (Lab 35):");
         System.Console.WriteLine("  7. View Analytics & Statistics");
-        System.Console.WriteLine("\n💾 DATA MANAGEMENT (Lab 35):");
+        System.Console.WriteLine("\n DATA MANAGEMENT (Lab 35):");
         System.Console.WriteLine("  8. Save Data to File");
         System.Console.WriteLine("  9. Exit (Save & Close)");
         System.Console.Write("\nChoose option (1-9): ");
@@ -132,12 +132,12 @@ public class ClinicApp
     private void ScheduleAppointment()
     {
         System.Console.WriteLine("\n" + new string('-', 60));
-        System.Console.WriteLine("📅 SCHEDULE NEW APPOINTMENT");
+        System.Console.WriteLine(" SCHEDULE NEW APPOINTMENT");
         System.Console.WriteLine(new string('-', 60));
 
         try
         {
-            System.Console.WriteLine("\n🐾 Available Pets:");
+            System.Console.WriteLine("\n Available Pets:");
             for (int i = 0; i < _pets.Count; i++)
             {
                 System.Console.WriteLine($"  {i + 1}. {_pets[i].Name} ({_pets[i].Species}) - Owner: {_pets[i].Owner.Name}");
@@ -146,12 +146,12 @@ public class ClinicApp
             System.Console.Write("Select pet number: ");
             if (!int.TryParse(System.Console.ReadLine(), out int petChoice) || petChoice < 1 || petChoice > _pets.Count)
             {
-                System.Console.WriteLine("❌ Invalid pet selection.");
+                System.Console.WriteLine(" Invalid pet selection.");
                 return;
             }
             var selectedPet = _pets[petChoice - 1];
 
-            System.Console.WriteLine("\n👨‍⚕️ Available Veterinarians:");
+            System.Console.WriteLine("\n Available Veterinarians:");
             for (int i = 0; i < _veterinarians.Count; i++)
             {
                 System.Console.WriteLine($"  {i + 1}. Dr. {_veterinarians[i].Name} ({_veterinarians[i].Specialization})");
@@ -160,7 +160,7 @@ public class ClinicApp
             System.Console.Write("Select veterinarian number: ");
             if (!int.TryParse(System.Console.ReadLine(), out int vetChoice) || vetChoice < 1 || vetChoice > _veterinarians.Count)
             {
-                System.Console.WriteLine("❌ Invalid veterinarian selection.");
+                System.Console.WriteLine(" Invalid veterinarian selection.");
                 return;
             }
             var selectedVet = _veterinarians[vetChoice - 1];
@@ -168,14 +168,14 @@ public class ClinicApp
             System.Console.Write("Enter appointment date (yyyy-MM-dd): ");
             if (!DateTime.TryParse(System.Console.ReadLine(), out DateTime appointmentDate))
             {
-                System.Console.WriteLine("❌ Invalid date format.");
+                System.Console.WriteLine(" Invalid date format.");
                 return;
             }
 
             System.Console.Write("Enter appointment time (HH:mm): ");
             if (!TimeSpan.TryParse(System.Console.ReadLine(), out TimeSpan appointmentTime))
             {
-                System.Console.WriteLine("❌ Invalid time format.");
+                System.Console.WriteLine(" Invalid time format.");
                 return;
             }
 
@@ -186,7 +186,7 @@ public class ClinicApp
 
             if (string.IsNullOrWhiteSpace(reason))
             {
-                System.Console.WriteLine("❌ Reason cannot be empty.");
+                System.Console.WriteLine(" Reason cannot be empty.");
                 return;
             }
 
@@ -194,30 +194,30 @@ public class ClinicApp
 
             if (result.Success)
             {
-                System.Console.WriteLine($"\n✅ {result.Message}");
+                System.Console.WriteLine($"\n {result.Message}");
                 System.Console.WriteLine($"   Appointment Details:");
-                System.Console.WriteLine($"   • ID: {result.Data?.Id}");
-                System.Console.WriteLine($"   • Pet: {selectedPet.Name}");
-                System.Console.WriteLine($"   • Owner: {selectedPet.Owner.Name}");
-                System.Console.WriteLine($"   • Veterinarian: Dr. {selectedVet.Name}");
-                System.Console.WriteLine($"   • DateTime: {appointmentDateTime:yyyy-MM-dd HH:mm}");
-                System.Console.WriteLine($"   • Reason: {reason}");
+                System.Console.WriteLine($"    ID: {result.Data?.Id}");
+                System.Console.WriteLine($"    Pet: {selectedPet.Name}");
+                System.Console.WriteLine($"    Owner: {selectedPet.Owner.Name}");
+                System.Console.WriteLine($"    Veterinarian: Dr. {selectedVet.Name}");
+                System.Console.WriteLine($"    DateTime: {appointmentDateTime:yyyy-MM-dd HH:mm}");
+                System.Console.WriteLine($"    Reason: {reason}");
             }
             else
             {
-                System.Console.WriteLine($"\n❌ Error: {result.Message}");
+                System.Console.WriteLine($"\n Error: {result.Message}");
             }
         }
         catch (Exception ex)
         {
-            System.Console.WriteLine($"\n❌ Unexpected error: {ex.Message}");
+            System.Console.WriteLine($"\n Unexpected error: {ex.Message}");
         }
     }
 
     private void ViewAllAppointments()
     {
         System.Console.WriteLine("\n" + new string('-', 60));
-        System.Console.WriteLine("📋 ALL APPOINTMENTS");
+        System.Console.WriteLine(" ALL APPOINTMENTS");
         System.Console.WriteLine(new string('-', 60));
 
         var appointments = _repository.GetAll();
@@ -232,14 +232,14 @@ public class ClinicApp
         }
         else
         {
-            System.Console.WriteLine("ℹ️ No appointments scheduled yet.");
+            System.Console.WriteLine(" No appointments scheduled yet.");
         }
     }
 
     private void ViewPetAppointments()
     {
         System.Console.WriteLine("\n" + new string('-', 60));
-        System.Console.WriteLine("🐾 VIEW PET APPOINTMENTS");
+        System.Console.WriteLine(" VIEW PET APPOINTMENTS");
         System.Console.WriteLine(new string('-', 60));
 
         System.Console.WriteLine("\nAvailable Pets:");
@@ -251,7 +251,7 @@ public class ClinicApp
         System.Console.Write("Select pet number: ");
         if (!int.TryParse(System.Console.ReadLine(), out int petChoice) || petChoice < 1 || petChoice > _pets.Count)
         {
-            System.Console.WriteLine("❌ Invalid pet selection.");
+            System.Console.WriteLine(" Invalid pet selection.");
             return;
         }
 
@@ -260,7 +260,7 @@ public class ClinicApp
 
         if (appointments.Count > 0)
         {
-            System.Console.WriteLine($"\n📅 Appointments for {selectedPet.Name}:");
+            System.Console.WriteLine($"\n Appointments for {selectedPet.Name}:");
             foreach (var appointment in appointments)
             {
                 DisplayAppointmentDetails(appointment);
@@ -268,14 +268,14 @@ public class ClinicApp
         }
         else
         {
-            System.Console.WriteLine($"\nℹ️ No appointments scheduled for {selectedPet.Name}.");
+            System.Console.WriteLine($"\n No appointments scheduled for {selectedPet.Name}.");
         }
     }
 
     private void ViewVeterinarianAppointments()
     {
         System.Console.WriteLine("\n" + new string('-', 60));
-        System.Console.WriteLine("👨‍⚕️ VIEW VETERINARIAN APPOINTMENTS");
+        System.Console.WriteLine(" VIEW VETERINARIAN APPOINTMENTS");
         System.Console.WriteLine(new string('-', 60));
 
         System.Console.WriteLine("\nAvailable Veterinarians:");
@@ -287,7 +287,7 @@ public class ClinicApp
         System.Console.Write("Select veterinarian number: ");
         if (!int.TryParse(System.Console.ReadLine(), out int vetChoice) || vetChoice < 1 || vetChoice > _veterinarians.Count)
         {
-            System.Console.WriteLine("❌ Invalid veterinarian selection.");
+            System.Console.WriteLine(" Invalid veterinarian selection.");
             return;
         }
 
@@ -296,7 +296,7 @@ public class ClinicApp
 
         if (appointments.Count > 0)
         {
-            System.Console.WriteLine($"\n📅 Appointments for Dr. {selectedVet.Name}:");
+            System.Console.WriteLine($"\n Appointments for Dr. {selectedVet.Name}:");
             foreach (var appointment in appointments)
             {
                 DisplayAppointmentDetails(appointment);
@@ -304,7 +304,7 @@ public class ClinicApp
         }
         else
         {
-            System.Console.WriteLine($"\nℹ️ No appointments scheduled for Dr. {selectedVet.Name}.");
+            System.Console.WriteLine($"\n No appointments scheduled for Dr. {selectedVet.Name}.");
         }
     }
 
@@ -313,7 +313,7 @@ public class ClinicApp
     private void CompleteAppointmentAndRecord()
     {
         System.Console.WriteLine("\n" + new string('-', 60));
-        System.Console.WriteLine("💊 COMPLETE APPOINTMENT & CREATE MEDICAL RECORD");
+        System.Console.WriteLine(" COMPLETE APPOINTMENT & CREATE MEDICAL RECORD");
         System.Console.WriteLine(new string('-', 60));
 
         try
@@ -324,11 +324,11 @@ public class ClinicApp
 
             if (scheduledAppointments.Count == 0)
             {
-                System.Console.WriteLine("\nℹ️ No scheduled appointments to complete.");
+                System.Console.WriteLine("\n No scheduled appointments to complete.");
                 return;
             }
 
-            System.Console.WriteLine("\n📅 Scheduled Appointments:");
+            System.Console.WriteLine("\n Scheduled Appointments:");
             for (int i = 0; i < scheduledAppointments.Count; i++)
             {
                 var apt = scheduledAppointments[i];
@@ -338,7 +338,7 @@ public class ClinicApp
             System.Console.Write("Select appointment to complete: ");
             if (!int.TryParse(System.Console.ReadLine(), out int aptChoice) || aptChoice < 1 || aptChoice > scheduledAppointments.Count)
             {
-                System.Console.WriteLine("❌ Invalid appointment selection.");
+                System.Console.WriteLine(" Invalid appointment selection.");
                 return;
             }
 
@@ -348,7 +348,7 @@ public class ClinicApp
             appointment.Complete();
             _repository.Update(appointment);
 
-            System.Console.WriteLine($"\n✅ Appointment marked as completed for {appointment.Pet.Name}");
+            System.Console.WriteLine($"\n Appointment marked as completed for {appointment.Pet.Name}");
 
             // Create medical record
             System.Console.Write("Enter diagnosis (max 500 chars): ");
@@ -361,7 +361,7 @@ public class ClinicApp
 
             if (recordResult.Success)
             {
-                System.Console.WriteLine($"\n✅ Medical record created successfully!");
+                System.Console.WriteLine($"\n Medical record created successfully!");
                 System.Console.WriteLine($"   Record ID: {recordResult.Data?.Id}");
                 System.Console.WriteLine($"   Pet: {appointment.Pet.Name}");
                 System.Console.WriteLine($"   Diagnosis: {diagnosis}");
@@ -369,30 +369,30 @@ public class ClinicApp
 
                 // Analyze diagnosis severity
                 var analysis = _diagnosisAnalyzer.AnalyzeDiagnosis(diagnosis ?? "");
-                System.Console.WriteLine($"\n📊 Diagnosis Analysis:");
+                System.Console.WriteLine($"\n Diagnosis Analysis:");
                 System.Console.WriteLine($"   Severity: {analysis.SeverityLevel} (Score: {analysis.SeverityScore}/100)");
                 System.Console.WriteLine($"   Scoring: {analysis.ScoringStrategy}");
             }
             else
             {
-                System.Console.WriteLine($"\n❌ Error creating medical record: {recordResult.Message}");
+                System.Console.WriteLine($"\n Error creating medical record: {recordResult.Message}");
             }
         }
         catch (Exception ex)
         {
-            System.Console.WriteLine($"\n❌ Unexpected error: {ex.Message}");
+            System.Console.WriteLine($"\n Unexpected error: {ex.Message}");
         }
     }
 
     private void ViewPetMedicalHistory()
     {
         System.Console.WriteLine("\n" + new string('-', 60));
-        System.Console.WriteLine("📋 PET MEDICAL HISTORY");
+        System.Console.WriteLine(" PET MEDICAL HISTORY");
         System.Console.WriteLine(new string('-', 60));
 
         try
         {
-            System.Console.WriteLine("\n🐾 Available Pets:");
+            System.Console.WriteLine("\n Available Pets:");
             for (int i = 0; i < _pets.Count; i++)
             {
                 System.Console.WriteLine($"  {i + 1}. {_pets[i].Name}");
@@ -401,14 +401,14 @@ public class ClinicApp
             System.Console.Write("Select pet: ");
             if (!int.TryParse(System.Console.ReadLine(), out int petChoice) || petChoice < 1 || petChoice > _pets.Count)
             {
-                System.Console.WriteLine("❌ Invalid pet selection.");
+                System.Console.WriteLine(" Invalid pet selection.");
                 return;
             }
 
             var pet = _pets[petChoice - 1];
             var profile = _analyticsService.GetPetMedicalProfile(pet);
 
-            System.Console.WriteLine($"\n🏥 Medical Profile for {pet.Name}");
+            System.Console.WriteLine($"\n Medical Profile for {pet.Name}");
             System.Console.WriteLine($"   Species: {pet.Species}");
             System.Console.WriteLine($"   Owner: {pet.Owner.Name}");
             System.Console.WriteLine($"   Total Appointments: {profile.TotalAppointments}");
@@ -417,16 +417,16 @@ public class ClinicApp
 
             if (profile.UniqueDiagnoses.Count > 0)
             {
-                System.Console.WriteLine($"\n📋 Diagnoses History:");
+                System.Console.WriteLine($"\n Diagnoses History:");
                 foreach (var diagnosis in profile.UniqueDiagnoses)
                 {
-                    System.Console.WriteLine($"   • {diagnosis}");
+                    System.Console.WriteLine($"    {diagnosis}");
                 }
             }
 
             if (profile.MedicalRecords.Count > 0)
             {
-                System.Console.WriteLine($"\n📂 Medical Records:");
+                System.Console.WriteLine($"\n Medical Records:");
                 foreach (var record in profile.MedicalRecords)
                 {
                     System.Console.WriteLine($"\n   Record ID: {record.Id}");
@@ -437,12 +437,12 @@ public class ClinicApp
             }
             else
             {
-                System.Console.WriteLine($"\nℹ️ No medical records found for {pet.Name}.");
+                System.Console.WriteLine($"\n No medical records found for {pet.Name}.");
             }
         }
         catch (Exception ex)
         {
-            System.Console.WriteLine($"\n❌ Error: {ex.Message}");
+            System.Console.WriteLine($"\n Error: {ex.Message}");
         }
     }
 
@@ -451,7 +451,7 @@ public class ClinicApp
     private void ViewAnalytics()
     {
         System.Console.WriteLine("\n" + new string('-', 60));
-        System.Console.WriteLine("📊 CLINIC ANALYTICS & STATISTICS");
+        System.Console.WriteLine(" CLINIC ANALYTICS & STATISTICS");
         System.Console.WriteLine(new string('-', 60));
 
         System.Console.WriteLine("\n1. Clinic Overview");
@@ -477,7 +477,7 @@ public class ClinicApp
                 ShowVeterinarianUtilization();
                 break;
             default:
-                System.Console.WriteLine("❌ Invalid choice.");
+                System.Console.WriteLine(" Invalid choice.");
                 break;
         }
     }
@@ -485,12 +485,12 @@ public class ClinicApp
     private void ShowClinicOverview()
     {
         System.Console.WriteLine("\n" + new string('-', 60));
-        System.Console.WriteLine("📊 CLINIC OVERVIEW");
+        System.Console.WriteLine(" CLINIC OVERVIEW");
         System.Console.WriteLine(new string('-', 60));
 
         var stats = _analyticsService.GetClinicStatistics();
 
-        System.Console.WriteLine($"\n📈 SUMMARY:");
+        System.Console.WriteLine($"\n SUMMARY:");
         System.Console.WriteLine($"   Total Appointments: {stats.TotalAppointments}");
         System.Console.WriteLine($"   Completed: {stats.CompletedAppointments}");
         System.Console.WriteLine($"   Cancelled: {stats.CancelledAppointments}");
@@ -500,19 +500,19 @@ public class ClinicApp
 
         if (stats.MostActiveVeterinarians.Count > 0)
         {
-            System.Console.WriteLine($"\n👨‍⚕️ MOST ACTIVE VETERINARIANS:");
+            System.Console.WriteLine($"\n MOST ACTIVE VETERINARIANS:");
             foreach (dynamic vet in stats.MostActiveVeterinarians.Cast<dynamic>().Take(5))
             {
-                System.Console.WriteLine($"   • {vet.Vet.Name}: {vet.Count} appointments");
+                System.Console.WriteLine($"    {vet.Vet.Name}: {vet.Count} appointments");
             }
         }
 
         if (stats.MostVisitedPets.Count > 0)
         {
-            System.Console.WriteLine($"\n🐾 MOST VISITED PETS:");
+            System.Console.WriteLine($"\n MOST VISITED PETS:");
             foreach (dynamic pet in stats.MostVisitedPets.Cast<dynamic>().Take(5))
             {
-                System.Console.WriteLine($"   • {pet.Pet.Name}: {pet.Count} appointments");
+                System.Console.WriteLine($"    {pet.Pet.Name}: {pet.Count} appointments");
             }
         }
     }
@@ -520,7 +520,7 @@ public class ClinicApp
     private void ShowVeterinarianStats()
     {
         System.Console.WriteLine("\n" + new string('-', 60));
-        System.Console.WriteLine("👨‍⚕️ VETERINARIAN STATISTICS");
+        System.Console.WriteLine(" VETERINARIAN STATISTICS");
         System.Console.WriteLine(new string('-', 60));
 
         System.Console.WriteLine("\nAvailable Veterinarians:");
@@ -532,14 +532,14 @@ public class ClinicApp
         System.Console.Write("Select veterinarian: ");
         if (!int.TryParse(System.Console.ReadLine(), out int vetChoice) || vetChoice < 1 || vetChoice > _veterinarians.Count)
         {
-            System.Console.WriteLine("❌ Invalid selection.");
+            System.Console.WriteLine(" Invalid selection.");
             return;
         }
 
         var vet = _veterinarians[vetChoice - 1];
         var stats = _analyticsService.GetVeterinarianStatistics(vet);
 
-        System.Console.WriteLine($"\n📊 Stats for Dr. {vet.Name}:");
+        System.Console.WriteLine($"\n Stats for Dr. {vet.Name}:");
         System.Console.WriteLine($"   Total Appointments: {stats.TotalAppointments}");
         System.Console.WriteLine($"   Completed: {stats.CompletedAppointments}");
         System.Console.WriteLine($"   Cancelled: {stats.CancelledAppointments}");
@@ -548,10 +548,10 @@ public class ClinicApp
 
         if (stats.MostCommonDiagnoses.Count > 0)
         {
-            System.Console.WriteLine($"\n💊 Most Common Diagnoses:");
+            System.Console.WriteLine($"\n Most Common Diagnoses:");
             foreach (dynamic d in stats.MostCommonDiagnoses.Cast<dynamic>())
             {
-                System.Console.WriteLine($"   • {d.Diagnosis}: {d.Count} cases");
+                System.Console.WriteLine($"    {d.Diagnosis}: {d.Count} cases");
             }
         }
     }
@@ -559,7 +559,7 @@ public class ClinicApp
     private void SearchAppointments()
     {
         System.Console.WriteLine("\n" + new string('-', 60));
-        System.Console.WriteLine("🔍 SEARCH APPOINTMENTS");
+        System.Console.WriteLine(" SEARCH APPOINTMENTS");
         System.Console.WriteLine(new string('-', 60));
 
         System.Console.Write("Owner name (or press Enter to skip): ");
@@ -582,7 +582,7 @@ public class ClinicApp
 
         if (results.Count > 0)
         {
-            System.Console.WriteLine($"\n📋 Found {results.Count} matching appointments:");
+            System.Console.WriteLine($"\n Found {results.Count} matching appointments:");
             foreach (var apt in results)
             {
                 DisplayAppointmentDetails(apt);
@@ -590,14 +590,14 @@ public class ClinicApp
         }
         else
         {
-            System.Console.WriteLine("\nℹ️ No appointments found matching your criteria.");
+            System.Console.WriteLine("\n No appointments found matching your criteria.");
         }
     }
 
     private void ShowVeterinarianUtilization()
     {
         System.Console.WriteLine("\n" + new string('-', 60));
-        System.Console.WriteLine("📊 VETERINARIAN UTILIZATION");
+        System.Console.WriteLine(" VETERINARIAN UTILIZATION");
         System.Console.WriteLine(new string('-', 60));
 
         var utilization = _analyticsService.GetVeterinarianUtilization();
@@ -617,24 +617,24 @@ public class ClinicApp
     private async Task PersistDataAsync()
     {
         System.Console.WriteLine("\n" + new string('-', 60));
-        System.Console.WriteLine("💾 SAVE DATA TO FILE");
+        System.Console.WriteLine(" SAVE DATA TO FILE");
         System.Console.WriteLine(new string('-', 60));
 
         try
         {
             if (_repository is not FileBasedAppointmentRepository fileRepo)
             {
-                System.Console.WriteLine("❌ Repository does not support persistence.");
+                System.Console.WriteLine(" Repository does not support persistence.");
                 return;
             }
 
             await fileRepo.PersistAsync(_owners, _pets, _veterinarians);
-            System.Console.WriteLine("\n✅ Data saved successfully to JSON file!");
+            System.Console.WriteLine("\n Data saved successfully to JSON file!");
             System.Console.WriteLine("   Location: %APPDATA%\\VetClinic\\clinic_data.json");
         }
         catch (Exception ex)
         {
-            System.Console.WriteLine($"\n❌ Error saving data: {ex.Message}");
+            System.Console.WriteLine($"\n Error saving data: {ex.Message}");
         }
     }
 
@@ -651,3 +651,5 @@ public class ClinicApp
         System.Console.WriteLine($"  Status: {appointment.Status}");
     }
 }
+
+

@@ -1,4 +1,4 @@
-﻿using VetClinic.Console;
+using VetClinic.Console;
 using VetClinic.Application;
 using VetClinic.Application.Strategies;
 using VetClinic.Infrastructure;
@@ -24,7 +24,7 @@ try
 }
 catch (Exception ex)
 {
-    System.Console.WriteLine($"⚠️  Warning: Could not load persisted data: {ex.Message}");
+    System.Console.WriteLine($"  Warning: Could not load persisted data: {ex.Message}");
     System.Console.WriteLine("   Starting with empty repository.\n");
 }
 
@@ -46,4 +46,5 @@ var clinic = new ClinicApp(
     veterinarians);
 
 await clinic.RunAsync();
+
 
